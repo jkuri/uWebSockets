@@ -6,8 +6,12 @@ default:
 	make `(uname -s)`
 Linux:
 	$(CXX) $(CPPFLAGS) $(CFLAGS) $(CPP_SHARED) -s -o libuWS.so
+	$(CXX) $(CPPFLAGS) $(CFLAGS) $(CPP_SHARED) -s -c
+	ar rvs libuWS.a *.o
 Darwin:
 	$(CXX) $(CPPFLAGS) $(CFLAGS) $(CPP_SHARED) $(CPP_OSX) -o libuWS.dylib
+	$(CXX) $(CPPFLAGS) $(CFLAGS) $(CPP_SHARED) -I/usr/local/opt/openssl/include -c
+	ar rvs libuWS.a *.o
 .PHONY: install
 install:
 	make install`(uname -s)`
@@ -28,6 +32,7 @@ installDarwin:
 clean:
 	rm -f libuWS.so
 	rm -f libuWS.dylib
+	rm -f libuWS.a
 .PHONY: tests
 tests:
 	$(CXX) $(CPP_OPENSSL_OSX) -std=c++11 -O3 tests/main.cpp -Isrc -o testsBin -lpthread -L. -luWS -lssl -lcrypto -lz -luv
